@@ -61,7 +61,8 @@ file with the same columns to use as the test set.
    is the test set (G0).
 3. **Report header fields:** full name, matric number, assignment line, variant line,
    repo URL. Read `report_config.yaml` in the working directory if present (simple
-   `key: value` lines: `name`, `matric`, `assignment`, `variant`, `repo_url`).
+   `key: value` lines: `name`, `matric`, `assignment`, `variant`, `repo`; `repo_url` is
+   accepted as an alias for `repo`).
    Otherwise ask at Checkpoint A. Never invent them; a placeholder such as
    `<matric number>` is allowed only if the user asks for one. The repo URL goes into
    the report header's `repo:` field (the assignment requires the link in the report);

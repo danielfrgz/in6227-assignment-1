@@ -68,10 +68,14 @@ unexplained complex one"):
 
 ## Evidence
 
-`evidence/` holds run outputs on the assignment's dataset, with placeholder
-report headers (`plan.md`, `metrics.json`, `report.pdf`, `run_log.md`). The run logs show
-the checkpoints in use, including a case where the human overrode a rule at Checkpoint B
-and the rule was then changed in the skill (see the commit history).
+`evidence/classification-run-20261006-2339/` is a development run on the assignment's
+dataset (`plan.md`, `metrics.json`, `report.pdf`, `run_log.md`, …). The run log shows the
+checkpoints in use, including a case where the human overrode a rule at Checkpoint B and
+the rule was then changed in the skill (see the commit history).
+
+> **This is an evidence run made with skill v0.1 and a placeholder header. It is not the
+> submitted report.** Several rules changed after it (see the commit history); the
+> submitted report comes from a later run with v1.0.0.
 
 ## Installation and use
 
@@ -93,7 +97,7 @@ Then, in a Claude Code session started in an empty working folder:
 ```
 
 Optionally, put a `report_config.yaml` in the working folder with the report header
-fields (`name`, `matric`, `assignment`, `variant`, `repo_url`); otherwise the skill asks
+fields (`name`, `matric`, `assignment`, `variant`, `repo`); otherwise the skill asks
 for them. Each run writes to a new `classification-run-<YYYYMMDD-HHMM>/` folder:
 `profile.json`, `plan.md`, `train.py`, `metrics.json`, `figures/`, `report.md`,
 `report.pdf` and `run_log.md`.

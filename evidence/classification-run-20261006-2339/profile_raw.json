@@ -1,0 +1,604 @@
+{
+  "file": {
+    "path": "/Users/daniel/VSProjects/in6227-assignment-1/data/raw/train.csv",
+    "delimiter": ",",
+    "encoding": "utf-8-sig",
+    "rows": 31112,
+    "columns": 16,
+    "profiled_rows": 31112,
+    "sampled": false
+  },
+  "seed": 42,
+  "duplicates": {
+    "exact_duplicate_rows": 0
+  },
+  "columns": {
+    "geological_era": {
+      "type": "categorical",
+      "missing_count": 2,
+      "missing_share": 6.428387760349704e-05,
+      "missing_markers": {
+        "converted": {
+          "<empty>": 2
+        },
+        "flagged_tokens": {},
+        "confirmed_sentinels": 0
+      },
+      "flagged_token_share": 0.0,
+      "distinct_count": 5,
+      "distinct_ratio": 0.0001607200257152041,
+      "top_value_share": 0.8563805850208936,
+      "top_values": {
+        "Triassic": 26642,
+        "Jurassic": 2934,
+        "Devonian": 984,
+        "Cambrian": 298,
+        "Permian": 252
+      },
+      "id_like": false,
+      "position": 0,
+      "rare_level_count": 2,
+      "rare_row_share": 0.01767920282867245,
+      "onehot_width_after_grouping": 4
+    },
+    "weather_pattern": {
+      "type": "categorical",
+      "missing_count": 3,
+      "missing_share": 9.642581640524557e-05,
+      "missing_markers": {
+        "converted": {
+          "<empty>": 3
+        },
+        "flagged_tokens": {},
+        "confirmed_sentinels": 0
+      },
+      "flagged_token_share": 0.0,
+      "distinct_count": 7,
+      "distinct_ratio": 0.00022501526889324633,
+      "top_value_share": 0.45883827831174256,
+      "top_values": {
+        "Monsoon": 14274,
+        "Heatwave": 10251,
+        "Blizzard": 4191,
+        "Fog": 987,
+        "Frost": 978
+      },
+      "id_like": false,
+      "position": 1,
+      "rare_level_count": 1,
+      "rare_row_share": 0.0007714809219197017,
+      "onehot_width_after_grouping": 7
+    },
+    "region": {
+      "type": "categorical",
+      "missing_count": 4,
+      "missing_share": 0.00012856775520699409,
+      "missing_markers": {
+        "converted": {
+          "<empty>": 4
+        },
+        "flagged_tokens": {},
+        "confirmed_sentinels": 0
+      },
+      "flagged_token_share": 0.0,
+      "distinct_count": 21,
+      "distinct_ratio": 0.0006750675067506751,
+      "top_value_share": 0.8973575929021473,
+      "top_values": {
+        "Texas": 27915,
+        "Arizona": 608,
+        "Wyoming": 553,
+        "Other": 532,
+        "South-Dakota": 178
+      },
+      "id_like": false,
+      "position": 2,
+      "rare_level_count": 17,
+      "rare_row_share": 0.04821910762504822,
+      "onehot_width_after_grouping": 5
+    },
+    "aptitude_score": {
+      "type": "numeric",
+      "missing_count": 4,
+      "missing_share": 0.00012856775520699409,
+      "missing_markers": {
+        "converted": {
+          "<empty>": 4
+        },
+        "flagged_tokens": {},
+        "confirmed_sentinels": 0
+      },
+      "flagged_token_share": 0.0,
+      "distinct_count": 15148,
+      "distinct_ratio": 0.48694869486948694,
+      "top_value_share": 0.0011251125112511251,
+      "top_values": {
+        "510": 35,
+        "317.12": 13,
+        "314.64": 13,
+        "314.81": 11,
+        "316.02": 11
+      },
+      "id_like": false,
+      "position": 3,
+      "numeric": {
+        "mean": 342.1344795550984,
+        "median": 333.515,
+        "std": 68.92508988459974,
+        "min": 90.0,
+        "max": 510.0,
+        "q1": 310.5975,
+        "q3": 402.5625,
+        "skewness": -0.29175480555718586,
+        "iqr_outlier_count": 617,
+        "iqr_outlier_share": 0.019834126269769835,
+        "negative_count": 0,
+        "is_integer_valued": false
+      },
+      "sentinel_candidates": []
+    },
+    "performance_score": {
+      "type": "numeric",
+      "missing_count": 2,
+      "missing_share": 6.428387760349704e-05,
+      "missing_markers": {
+        "converted": {
+          "<empty>": 2
+        },
+        "flagged_tokens": {},
+        "confirmed_sentinels": 0
+      },
+      "flagged_token_share": 0.0,
+      "distinct_count": 24418,
+      "distinct_ratio": 0.7848923175827708,
+      "top_value_share": 0.008518161362905818,
+      "top_values": {
+        "0": 265,
+        "1010": 7,
+        "94.15": 6,
+        "404.62": 6,
+        "149.77": 6
+      },
+      "id_like": false,
+      "position": 4,
+      "numeric": {
+        "mean": 296.4927264545162,
+        "median": 275.385,
+        "std": 187.620357064196,
+        "min": 0.0,
+        "max": 1010.0,
+        "q1": 146.5725,
+        "q3": 420.17,
+        "skewness": 0.5523219036131235,
+        "iqr_outlier_count": 154,
+        "iqr_outlier_share": 0.004950176792028286,
+        "negative_count": 0,
+        "is_integer_valued": false
+      },
+      "sentinel_candidates": []
+    },
+    "stability_index": {
+      "type": "numeric",
+      "missing_count": 2,
+      "missing_share": 6.428387760349704e-05,
+      "missing_markers": {
+        "converted": {
+          "<empty>": 2
+        },
+        "flagged_tokens": {},
+        "confirmed_sentinels": 0
+      },
+      "flagged_token_share": 0.0,
+      "distinct_count": 3788,
+      "distinct_ratio": 0.12176149148183864,
+      "top_value_share": 0.008518161362905818,
+      "top_values": {
+        "0": 265,
+        "3.697": 35,
+        "3.737": 34,
+        "3.594": 33,
+        "3.597": 32
+      },
+      "id_like": false,
+      "position": 5,
+      "numeric": {
+        "mean": 3.1564258437801347,
+        "median": 3.351,
+        "std": 0.8493071288602129,
+        "min": 0.0,
+        "max": 4.625,
+        "q1": 2.751,
+        "q3": 3.76175,
+        "skewness": -1.2293277014158868,
+        "iqr_outlier_count": 1128,
+        "iqr_outlier_share": 0.036258437801350046,
+        "negative_count": 0,
+        "is_integer_valued": false
+      },
+      "sentinel_candidates": []
+    },
+    "personal_interest": {
+      "type": "categorical",
+      "missing_count": 6,
+      "missing_share": 0.00019285163281049114,
+      "missing_markers": {
+        "converted": {
+          "<empty>": 6
+        },
+        "flagged_tokens": {
+          "unknown": 1767
+        },
+        "confirmed_sentinels": 0
+      },
+      "flagged_token_share": 0.05679480586268964,
+      "distinct_count": 11,
+      "distinct_ratio": 0.00035362952485051114,
+      "top_value_share": 0.1274673696392979,
+      "top_values": {
+        "Astronomy": 3965,
+        "Beekeeping": 3955,
+        "Falconry": 3877,
+        "Archery": 3559,
+        "Calligraphy": 3443
+      },
+      "id_like": false,
+      "position": 6,
+      "rare_level_count": 0,
+      "rare_row_share": 0.0,
+      "onehot_width_after_grouping": 11
+    },
+    "load_ratio": {
+      "type": "numeric",
+      "missing_count": 2,
+      "missing_share": 6.428387760349704e-05,
+      "missing_markers": {
+        "converted": {
+          "<empty>": 2
+        },
+        "flagged_tokens": {},
+        "confirmed_sentinels": 0
+      },
+      "flagged_token_share": 0.0,
+      "distinct_count": 18799,
+      "distinct_ratio": 0.6042751526840244,
+      "top_value_share": 0.0012214721954355513,
+      "top_values": {
+        "0": 38,
+        "24.526": 9,
+        "24.363": 9,
+        "23.219": 9,
+        "23.511": 9
+      },
+      "id_like": false,
+      "position": 7,
+      "numeric": {
+        "mean": 24.422677402764382,
+        "median": 23.689,
+        "std": 9.920133152161371,
+        "min": 0.0,
+        "max": 143.717,
+        "q1": 19.272,
+        "q3": 27.65675,
+        "skewness": 1.7050311490534278,
+        "iqr_outlier_count": 2527,
+        "iqr_outlier_share": 0.08122790099646415,
+        "negative_count": 0,
+        "is_integer_valued": false
+      },
+      "sentinel_candidates": []
+    },
+    "brew_preference": {
+      "type": "boolean",
+      "missing_count": 7,
+      "missing_share": 0.00022499357161223966,
+      "missing_markers": {
+        "converted": {
+          "<empty>": 7
+        },
+        "flagged_tokens": {},
+        "confirmed_sentinels": 0
+      },
+      "flagged_token_share": 0.0,
+      "distinct_count": 2,
+      "distinct_ratio": 6.429834431763383e-05,
+      "top_value_share": 0.667963349943739,
+      "top_values": {
+        "Espresso": 20777,
+        "Latte": 10328
+      },
+      "id_like": false,
+      "position": 8,
+      "rare_level_count": 0,
+      "rare_row_share": 0.0,
+      "onehot_width_after_grouping": 2
+    },
+    "instrument": {
+      "type": "categorical",
+      "missing_count": 3,
+      "missing_share": 9.642581640524557e-05,
+      "missing_markers": {
+        "converted": {
+          "<empty>": 3
+        },
+        "flagged_tokens": {},
+        "confirmed_sentinels": 0
+      },
+      "flagged_token_share": 0.0,
+      "distinct_count": 6,
+      "distinct_ratio": 0.00019287023047992542,
+      "top_value_share": 0.4041595679706837,
+      "top_values": {
+        "Cello": 12573,
+        "Oboe": 8065,
+        "Dulcimer": 4780,
+        "Theremin": 3236,
+        "Zither": 1491
+      },
+      "id_like": false,
+      "position": 9,
+      "rare_level_count": 0,
+      "rare_row_share": 0.0,
+      "onehot_width_after_grouping": 6
+    },
+    "species": {
+      "type": "categorical",
+      "missing_count": 3,
+      "missing_share": 9.642581640524557e-05,
+      "missing_markers": {
+        "converted": {
+          "<empty>": 3
+        },
+        "flagged_tokens": {
+          "unknown": 1760
+        },
+        "confirmed_sentinels": 0
+      },
+      "flagged_token_share": 0.056569812291077395,
+      "distinct_count": 7,
+      "distinct_ratio": 0.00022501526889324633,
+      "top_value_share": 0.69828666945257,
+      "top_values": {
+        "Lynx": 21723,
+        "Heron": 2449,
+        "Orca": 1948,
+        "Unknown": 1760,
+        "Viper": 1230
+      },
+      "id_like": false,
+      "position": 10,
+      "rare_level_count": 0,
+      "rare_row_share": 0.0,
+      "onehot_width_after_grouping": 7
+    },
+    "index_weight": {
+      "type": "numeric",
+      "missing_count": 3,
+      "missing_share": 9.642581640524557e-05,
+      "missing_markers": {
+        "converted": {
+          "<empty>": 3
+        },
+        "flagged_tokens": {},
+        "confirmed_sentinels": 0
+      },
+      "flagged_token_share": 0.0,
+      "distinct_count": 3595,
+      "distinct_ratio": 0.11556141309588865,
+      "top_value_share": 0.0011893664212928735,
+      "top_values": {
+        "12.26": 37,
+        "11.54": 37,
+        "11.73": 36,
+        "10.86": 36,
+        "10.28": 35
+      },
+      "id_like": false,
+      "position": 11,
+      "numeric": {
+        "mean": 12.721826481082644,
+        "median": 11.73,
+        "std": 7.747198308158069,
+        "min": 0.0,
+        "max": 99.62,
+        "q1": 7.52,
+        "q3": 16.23,
+        "skewness": 1.5112255303444913,
+        "iqr_outlier_count": 1017,
+        "iqr_outlier_share": 0.03269150406634736,
+        "negative_count": 0,
+        "is_integer_valued": false
+      },
+      "sentinel_candidates": []
+    },
+    "mineral_type": {
+      "type": "categorical",
+      "missing_count": 3,
+      "missing_share": 9.642581640524557e-05,
+      "missing_markers": {
+        "converted": {
+          "<empty>": 3
+        },
+        "flagged_tokens": {},
+        "confirmed_sentinels": 0
+      },
+      "flagged_token_share": 0.0,
+      "distinct_count": 16,
+      "distinct_ratio": 0.0005143206146131344,
+      "top_value_share": 0.32392555209103474,
+      "top_values": {
+        "Marble": 10077,
+        "Opal": 6892,
+        "Sapphire": 5122,
+        "Ruby": 1668,
+        "Granite": 1312
+      },
+      "id_like": false,
+      "position": 12,
+      "rare_level_count": 2,
+      "rare_row_share": 0.006461152721077502,
+      "onehot_width_after_grouping": 15
+    },
+    "activity_duration": {
+      "type": "numeric",
+      "missing_count": 2,
+      "missing_share": 6.428387760349704e-05,
+      "missing_markers": {
+        "converted": {
+          "<empty>": 2
+        },
+        "flagged_tokens": {},
+        "confirmed_sentinels": 0
+      },
+      "flagged_token_share": 0.0,
+      "distinct_count": 9657,
+      "distinct_ratio": 0.31041465766634524,
+      "top_value_share": 0.0012214721954355513,
+      "top_values": {
+        "0": 38,
+        "77.51": 24,
+        "80.71": 23,
+        "79.83": 22,
+        "79.53": 21
+      },
+      "id_like": false,
+      "position": 13,
+      "numeric": {
+        "mean": 80.36061780777884,
+        "median": 80.33,
+        "std": 25.51507972007513,
+        "min": 0.0,
+        "max": 205.0,
+        "q1": 72.74,
+        "q3": 90.25750000000001,
+        "skewness": 0.1991828657910735,
+        "iqr_outlier_count": 5350,
+        "iqr_outlier_share": 0.1719704275152684,
+        "negative_count": 0,
+        "is_integer_valued": false
+      },
+      "sentinel_candidates": []
+    },
+    "composite_rank": {
+      "type": "numeric",
+      "missing_count": 1,
+      "missing_share": 3.214193880174852e-05,
+      "missing_markers": {
+        "converted": {
+          "<empty>": 1
+        },
+        "flagged_tokens": {},
+        "confirmed_sentinels": 0
+      },
+      "flagged_token_share": 0.0,
+      "distinct_count": 4213,
+      "distinct_ratio": 0.1354183407797885,
+      "top_value_share": 0.0008678602423580085,
+      "top_values": {
+        "3.376": 27,
+        "3.136": 25,
+        "3.051": 25,
+        "3.228": 24,
+        "3.422": 23
+      },
+      "id_like": false,
+      "position": 14,
+      "numeric": {
+        "mean": 3.2387707884671015,
+        "median": 3.199,
+        "std": 0.8697835567352963,
+        "min": 0.589,
+        "max": 6.876,
+        "q1": 2.591,
+        "q3": 3.838,
+        "skewness": 0.2575607048654434,
+        "iqr_outlier_count": 115,
+        "iqr_outlier_share": 0.003696441773006332,
+        "negative_count": 0,
+        "is_integer_valued": false
+      },
+      "sentinel_candidates": []
+    },
+    "label": {
+      "type": "boolean",
+      "missing_count": 3,
+      "missing_share": 9.642581640524557e-05,
+      "missing_markers": {
+        "converted": {
+          "<empty>": 3
+        },
+        "flagged_tokens": {},
+        "confirmed_sentinels": 0
+      },
+      "flagged_token_share": 0.0,
+      "distinct_count": 2,
+      "distinct_ratio": 6.42900768266418e-05,
+      "top_value_share": 0.7600694332829728,
+      "top_values": {
+        "no": 23645,
+        "yes": 7464
+      },
+      "id_like": false,
+      "position": 15,
+      "rare_level_count": 0,
+      "rare_row_share": 0.0,
+      "onehot_width_after_grouping": 2
+    }
+  },
+  "type_counts": {
+    "categorical": 7,
+    "numeric": 7,
+    "boolean": 2
+  },
+  "target_candidates": [
+    {
+      "column": "label",
+      "score": 4,
+      "evidence": {
+        "distinct_count": 2,
+        "is_last_column": true,
+        "name_matches_generic_hint": true,
+        "missing_share": 9.642581640524557e-05
+      }
+    },
+    {
+      "column": "brew_preference",
+      "score": 1,
+      "evidence": {
+        "distinct_count": 2,
+        "is_last_column": false,
+        "name_matches_generic_hint": false,
+        "missing_share": 0.00022499357161223966
+      }
+    },
+    {
+      "column": "geological_era",
+      "score": 1,
+      "evidence": {
+        "distinct_count": 5,
+        "is_last_column": false,
+        "name_matches_generic_hint": false,
+        "missing_share": 6.428387760349704e-05
+      }
+    },
+    {
+      "column": "instrument",
+      "score": 1,
+      "evidence": {
+        "distinct_count": 6,
+        "is_last_column": false,
+        "name_matches_generic_hint": false,
+        "missing_share": 9.642581640524557e-05
+      }
+    },
+    {
+      "column": "weather_pattern",
+      "score": 1,
+      "evidence": {
+        "distinct_count": 7,
+        "is_last_column": false,
+        "name_matches_generic_hint": false,
+        "missing_share": 9.642581640524557e-05
+      }
+    }
+  ]
+}
