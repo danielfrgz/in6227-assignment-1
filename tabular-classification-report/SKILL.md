@@ -9,7 +9,7 @@ description: >-
   they don't name the target column or mention this skill.
 compatibility: Python 3.10+ with pandas, numpy, scikit-learn, matplotlib, reportlab, pypdf.
 metadata:
-  version: "0.1.0"
+  version: "1.0.0"
 ---
 
 # Tabular classification report
@@ -123,6 +123,11 @@ Read `profile_raw.json` (not the raw rows) and establish:
    `NA`-style tokens are converted to missing. Word tokens (`unknown`, `none`, `-`) and
    sentinels are **never converted automatically**; list them for Checkpoint A, because
    a level such as `unknown` or a value such as 0 can be a real, informative value.
+   Also list the profiler's **boundary pile-ups** (a column's minimum or maximum repeated
+   unusually often: a possible cap, floor or censoring code) and **co-occurring zeros**
+   (numeric columns that are zero on the same rows: possibly "not recorded"). Ask the
+   user whether each is a real value or a missing-value code. If kept as real, the
+   report must state it as a limitation, with the class counts of the affected rows.
 4. **Target candidates (G1):** rank columns by: few distinct values (2 to about 20),
    position (last column is a common convention), a name matching a generic list
    (`label`, `target`, `class`, `y`, `outcome`), no missing values. Show the top 3 with
@@ -166,6 +171,9 @@ skewness, quartiles, IQR outlier count and share). Plus:
   never changes the majority prediction;
 - **variance pilot:** 5-fold CV balanced accuracy of a fully grown tree vs a depth-5 tree
   (G6), on at most 20,000 training rows;
+- **baseline metric scores:** the majority baseline's and a random guesser's expected
+  accuracy and macro-F1 (and AUPRC for binary) on this class distribution (G10);
+- co-occurring zeros with the class counts of the shared rows;
 - highly correlated numeric pairs; for a test file, its schema check, class distribution
   and missing shares next to the training file's.
 
@@ -239,7 +247,7 @@ Minority share = smallest class count / total rows (training part).
 | Condition | Action | Reason |
 |---|---|---|
 | Always | Stratify the split and every CV fold | Keeps class proportions in each part (L2 p39, L4 p81) |
-| Minority share < 20% | `class_weight="balanced"` for models that support it; imbalance-aware primary metric (G10). No resampling by default | Weighting applies the cost-matrix idea (L4 p75) during training without adding or removing rows ⚠ |
+| Minority share < 20% | `class_weight="balanced"` for models that support it. No resampling by default. (The primary metric is chosen separately, by G10) | Weighting applies the cost-matrix idea (L4 p75) during training without adding or removing rows ⚠ |
 | Training rows < about 1,000 | 10-fold stratified CV | Small data → high variance estimates; more folds use more data per fit (L4 p53, p80) |
 | Otherwise | 5-fold stratified CV | Adequate estimate at lower cost (L4 p81). Folds are an experimental setting, not a hyperparameter (L5 p10) |
 | Any class with < 10 training rows | Warn; reduce folds so each fold holds at least one of each class | Stratified CV cannot place a class in every fold otherwise |
@@ -328,13 +336,26 @@ search would exceed about 15 minutes, shrink the grid or use 3 folds, and say so
 
 #### G10. Metrics and comparison
 
-| Condition | Primary metric (used for tuning and the headline comparison) |
+**Primary metric (used for tuning, the bootstrap and the headline comparison) is chosen
+relative to the trivial baseline, not by a class-share cutoff.** A primary metric must
+not reward a classifier for exploiting the class distribution, which is exactly why
+accuracy misleads on L4 p74. `profile.json → baseline_metric_scores` gives, for each
+candidate metric, the expected score of the majority-class baseline and of a uniform
+random guesser on this class distribution:
+
+| Rule | Reason |
 |---|---|
-| Minority share ≥ 20% | Accuracy, with macro-F1 alongside |
-| Minority share < 20% | Macro-F1; for binary also PR-AUC (L4 p84). Show accuracy once, next to the baseline, to illustrate its limitation (L4 p74) |
+| A candidate metric is **rejected** if the majority baseline beats the random guesser on it (`majority_beats_random: true`) | The metric then rewards always predicting the majority class: a model can look good without separating the classes (L4 p74) |
+| Among the accepted candidates, choose **accuracy** if accepted (only when classes are balanced), otherwise **macro-F1** | Accuracy is the most familiar metric (L4 p73); macro-F1 is the F-measure (L4 p77) averaged over classes so no class can be hidden ⚠ (macro averaging is not on a slide) |
+
+Name both baseline scores in the report when justifying the choice (e.g. "baseline
+accuracy <a> > chance <b> → accuracy rejected; baseline macro-F1 <c> < chance <d> →
+macro-F1"). Accuracy is still **reported** in the results table, next to the
+baseline's accuracy, to show its limitation.
 
 Always report: confusion matrices (L4 p72), per-class precision and recall (L4 p77),
-ROC-AUC for binary (L4 p83), CV mean ± sd of the primary metric, and the baseline row.
+CV mean ± sd of the primary metric, and the baseline row. Binary targets: also AUPRC for
+the minority class, with its baseline (= prevalence) (L4 p84), and ROC-AUC (L4 p83).
 ⚠ Macro averaging weights every class equally, so a minority class cannot be hidden by
 the majority.
 
@@ -386,7 +407,8 @@ Write `<run>/train.py` — the exact code that runs, saved before running it. It
    step, class counts, chosen parameters, CV results, test metrics per model (baseline
    included), confusion matrices, CI and bootstrap results, seeds, library versions.
 6. Save at most two figures to `<run>/figures/`: confusion matrices side by side (always),
-   and either PR curves (binary, imbalanced), ROC curves (binary, balanced) or tree
+   and either PR curves (binary, accuracy rejected by G10; L4 p84), ROC curves (binary,
+   accuracy accepted; L4 p83) or tree
    feature importances (multi-class).
 
 If training fails, fix the code, keep the failed version as `train_attempt<N>.py`, and log it.
@@ -398,7 +420,7 @@ Fill `<skill_dir>/assets/report_template.md` into `<run>/report.md`. Rules:
 - **Every number** is copied from `profile.json` or `metrics.json`. No rounding beyond
   3 decimals; no number that is not in those files.
 - **Every justification names the measured value** that triggered it, and the course
-  reference in parentheses, e.g. "minority share 0.12 < 0.20 → macro-F1 (L4 p74)".
+  reference in parentheses, e.g. "baseline accuracy <a> > chance <b> → macro-F1 (L4 p74)".
 - Space budget (of 2 pages): exploration & cleaning ~25%, features ~10%, training ~20%,
   evaluation ~25%, findings ~20%. At most two figures, one results table.
 - State limitations honestly: semantics unknown, sampling, distribution shift, what the

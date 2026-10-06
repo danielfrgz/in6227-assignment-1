@@ -9,7 +9,10 @@ Two modes:
 
 * Without ``--target``: whole-table profile used in Phase 1 (format, duplicates,
   missing and disguised-missing values, column types, target candidates).
-* With ``--target``: adds the class distribution, a one-rule leakage screen per
+* Both modes flag sentinel candidates, boundary pile-ups (repeated minimum or
+  maximum values) and numeric columns that are zero on the same rows.
+* With ``--target``: adds the class distribution, the expected scores of trivial
+  baselines on each candidate primary metric, a one-rule leakage screen per
   feature, highly correlated numeric pairs, a model-variance pilot and, if
   ``--test`` is given, a train/test comparison (schema, class distribution,
   missing shares, and test rows that exactly duplicate a training row).
@@ -51,6 +54,9 @@ TARGET_MAX_CLASSES = 20        # more distinct values than this -> unlikely targ
 MAX_ROWS_FULL = 1_000_000      # above this many rows, profile a sample
 SCREEN_MAX_ROWS = 20_000       # sample size for the screen and pilot
 PILOT_SHALLOW_DEPTH = 5        # reference depth for the variance pilot
+MIN_FLAG_COUNT = 5             # a repeated value needs at least this many rows to be flagged
+SPIKE_FACTOR = 10              # ... and this many times the median value frequency
+ZERO_OVERLAP_JACCARD = 0.9     # zero sets this similar across columns are reported together
 
 
 def sniff_format(path: Path) -> tuple[str, str]:
@@ -134,9 +140,10 @@ def infer_type(series: pd.Series) -> tuple[str, pd.Series | None]:
 def sentinel_flags(numeric: pd.Series) -> list[dict]:
     """Flag common sentinel values that look like codes rather than measurements.
 
-    A value is flagged if it occurs in at least 1% of rows and either lies outside
-    Tukey's fences of the remaining values or occurs at least 10 times as often as
-    the median value frequency.
+    A value is flagged if it occurs in at least MIN_FLAG_COUNT rows and either lies
+    outside Tukey's fences of the remaining values or occurs at least SPIKE_FACTOR
+    times as often as the median value frequency. A count floor is used instead of a
+    share floor: a code used in 0.5% of a large table is still a code.
     """
     values = numeric.dropna()
     if values.empty:
@@ -146,7 +153,7 @@ def sentinel_flags(numeric: pd.Series) -> list[dict]:
     flags = []
     for cand in SENTINEL_CANDIDATES:
         n = int(counts.get(cand, 0))
-        if n == 0 or n / len(values) < 0.01:
+        if n < MIN_FLAG_COUNT:
             continue
         rest = values[values != cand]
         if rest.empty:
@@ -154,12 +161,99 @@ def sentinel_flags(numeric: pd.Series) -> list[dict]:
         q1, q3 = rest.quantile([0.25, 0.75])
         iqr = q3 - q1
         outside = cand < q1 - 1.5 * iqr or cand > q3 + 1.5 * iqr
-        spike = n >= 10 * median_count
+        spike = n >= SPIKE_FACTOR * median_count
         if outside or spike:
             flags.append({"value": cand, "count": n, "share": n / len(values),
                           "outside_fences_of_rest": bool(outside),
                           "frequency_spike": bool(spike)})
     return flags
+
+
+def boundary_pileups(numeric: pd.Series) -> list[dict]:
+    """Flag a column's minimum or maximum when that exact value repeats unusually often.
+
+    Many identical values at an extreme suggest a cap, floor or censoring code rather
+    than a measurement. Flagged if the extreme occurs in at least MIN_FLAG_COUNT rows
+    and either (a) at least SPIKE_FACTOR times the median value frequency, or (b) more
+    often than any value strictly inside the range (a cap makes the boundary the most
+    repeated value). Flagged only; whether it is a real value is decided by the user.
+    """
+    values = numeric.dropna()
+    if values.nunique() < 3:
+        return []
+    counts = values.value_counts()
+    median_count = float(counts.median())
+    low, high = values.min(), values.max()
+    interior_max = int(counts.drop([low, high]).max())
+    flags = []
+    for side, value in (("min", low), ("max", high)):
+        n = int(counts[value])
+        spike = n >= SPIKE_FACTOR * median_count
+        exceeds_interior = n > interior_max
+        if n >= MIN_FLAG_COUNT and (spike or exceeds_interior):
+            flags.append({"side": side, "value": float(value), "count": n,
+                          "share": n / len(values), "frequency_spike": bool(spike),
+                          "exceeds_every_interior_value": bool(exceeds_interior)})
+    return flags
+
+
+def co_occurring_zeros(clean: pd.DataFrame, numeric_cols: list[str],
+                       target: pd.Series | None = None) -> list[dict]:
+    """Groups of numeric columns that are zero on (almost) the same rows.
+
+    Zeros shared across several measurements often mean "not recorded" rather than
+    a true zero. Pairs with at least MIN_FLAG_COUNT zero rows each and a Jaccard
+    overlap of at least ZERO_OVERLAP_JACCARD are reported, with the class counts of
+    the shared rows when a target is given.
+    """
+    masks = {}
+    for col in numeric_cols:
+        mask = pd.to_numeric(clean[col], errors="coerce") == 0
+        if mask.sum() >= MIN_FLAG_COUNT:
+            masks[col] = mask
+    out = []
+    cols = list(masks)
+    for i, a in enumerate(cols):
+        for b in cols[i + 1:]:
+            both = masks[a] & masks[b]
+            either = masks[a] | masks[b]
+            jaccard = both.sum() / either.sum()
+            if jaccard >= ZERO_OVERLAP_JACCARD:
+                entry = {"columns": [a, b], "rows_zero_in_both": int(both.sum()),
+                         "jaccard": float(jaccard)}
+                if target is not None:
+                    entry["class_counts"] = {str(k): int(v) for k, v in
+                                             target[both].value_counts().items()}
+                out.append(entry)
+    return out
+
+
+def baseline_metric_scores(class_shares: pd.Series) -> dict:
+    """Expected scores of two trivial classifiers on each candidate primary metric.
+
+    ``majority``: always predicts the most frequent class. ``uniform_random``: predicts
+    each class with probability 1/K. Computed analytically from the class shares (the
+    expected values on data with this class distribution). A metric on which the
+    majority baseline beats the random guesser rewards exploiting the class
+    distribution, which is the limitation of accuracy shown on L4 p74.
+    """
+    q = class_shares.to_numpy(dtype=float)
+    k = len(q)
+    p = q.max()
+    random_f1 = [2 * qi * (1 / k) / (qi + 1 / k) for qi in q]
+    scores = {
+        "accuracy": {"majority": float(p), "uniform_random": 1 / k},
+        "macro_f1": {"majority": float(2 * p / (1 + p) / k),
+                     "uniform_random": float(np.mean(random_f1))},
+    }
+    for metric in scores.values():
+        metric["majority_minus_random"] = metric["majority"] - metric["uniform_random"]
+        metric["majority_beats_random"] = bool(metric["majority_minus_random"] > 1e-12)
+    if k == 2:
+        prevalence = float(q.min())
+        scores["auprc_minority"] = {"majority": prevalence, "uniform_random": prevalence,
+                                    "note": "baseline AUPRC equals the positive-class prevalence"}
+    return scores
 
 
 def numeric_summary(numeric: pd.Series) -> dict:
@@ -219,6 +313,7 @@ def profile_column(clean: pd.Series, missing_info: dict) -> dict:
     if numeric is not None and col_type == "numeric":
         info["numeric"] = numeric_summary(numeric)
         info["sentinel_candidates"] = sentinel_flags(numeric)
+        info["boundary_pileups"] = boundary_pileups(numeric)
     return info
 
 
@@ -413,9 +508,11 @@ def main() -> None:
         columns[name]["position"] = pos
     report["columns"] = columns
     report["type_counts"] = pd.Series([c["type"] for c in columns.values()]).value_counts().to_dict()
+    numeric_all = [c for c in names if columns[c]["type"] == "numeric"]
 
     if not args.target:
         report["target_candidates"] = target_candidates(columns, names)
+        report["co_occurring_zeros"] = co_occurring_zeros(clean, numeric_all)
     else:
         if args.target not in clean.columns:
             sys.exit(f"target column not found: {args.target!r}")
@@ -423,6 +520,10 @@ def main() -> None:
         report["target"] = {"column": args.target,
                             "rows_missing_target": int(clean[args.target].isna().sum()),
                             **class_distribution(labelled[args.target])}
+        report["baseline_metric_scores"] = baseline_metric_scores(
+            labelled[args.target].value_counts(normalize=True))
+        report["co_occurring_zeros"] = co_occurring_zeros(
+            labelled, [c for c in numeric_all if c != args.target], labelled[args.target])
         types = {k: v["type"] for k, v in columns.items()}
         features = [c for c in names if c != args.target
                     and types[c] not in {"empty", "text", "datetime"}
