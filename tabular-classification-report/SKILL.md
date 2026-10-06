@@ -26,7 +26,7 @@ decision and challenge it, so:
   rationale does not depend on any particular dataset. You may override one, but only
   with a stated reason, and the override goes into `run_log.md`.
 - **Simple and justified beats complex and unexplained.** Prefer the simpler model when
-  two perform similarly (Occam's razor, L4 p56).
+  two perform *indistinguishably* (Occam's razor, L4 p56; see G10 for when that applies).
 - **The human stays in the loop.** Stop at Checkpoints A, B and C and wait for the user.
 - **No invented numbers.** Every number in the report must come from `profile.json` or
   `metrics.json` produced by this run. If a value is missing, say so; never estimate it.
@@ -63,7 +63,9 @@ file with the same columns to use as the test set.
    repo URL. Read `report_config.yaml` in the working directory if present (simple
    `key: value` lines: `name`, `matric`, `assignment`, `variant`, `repo_url`).
    Otherwise ask at Checkpoint A. Never invent them; a placeholder such as
-   `<matric number>` is allowed only if the user asks for one.
+   `<matric number>` is allowed only if the user asks for one. The repo URL goes into
+   the report header's `repo:` field (the assignment requires the link in the report);
+   if none is available, ask, and never leave the field silently empty.
 4. **Output folder:** create `./classification-run-<YYYYMMDD-HHMM>/` in the working
    directory. If it exists, append `-2`, `-3`, … Never reuse or overwrite a run folder.
 
@@ -80,8 +82,13 @@ If an import fails, report which package is missing and point to `requirements.t
 
 - **Model name and version:** your own model identifier (e.g. the exact model ID you
   run as). If you are not certain of it, ask the user.
-- **Interface and version:** for Claude Code, run `claude --version`. Otherwise ask.
-- **Skill version:** `metadata.version` above, plus the repo URL if known.
+- **Interface and version:** for Claude Code, run `claude --version`, but treat the
+  result as a proposal only: it reports the *installed* binary, which can differ from the
+  version of the running session (e.g. when an update was installed after the session
+  started). **Ask the user to confirm** the version shown by their running session at
+  Checkpoint A. Other interfaces: ask.
+- **Skill version:** `metadata.version` above (header field `skill:`); the repo URL goes
+  in the separate header field `repo:`.
 
 Write these to `run_log.md` immediately.
 
@@ -100,9 +107,14 @@ python <skill_dir>/scripts/profile_data.py <data_path> --out <run>/profile_raw.j
 Read `profile_raw.json` (not the raw rows) and establish:
 
 1. **Format:** delimiter, encoding, header row, row and column counts, as detected.
-2. **Duplicates:** exact duplicate rows (count). Default: drop them, because a duplicate
-   counts the same object twice and can sit on both sides of the split (L2 p29).
-   Keep them if the profile suggests repeated rows are legitimate events (no ID column
+2. **Duplicates:** exact duplicate rows (count). Default: drop them **from the training
+   data only**, because a duplicate counts the same object twice and, without a separate
+   test file, can sit on both sides of the split (L2 p29): deduplicate the whole file
+   *before* splitting it. A provided test file is **never deduplicated or filtered**
+   (except rows with no target, which cannot be scored): removing test rows changes the
+   population the scores describe. Report how many test rows duplicate a training row
+   (`test_file.rows_duplicating_a_training_row`) as a limitation instead. Keep training
+   duplicates if the profile suggests repeated rows are legitimate events (no ID column
    and few columns); say which you chose.
 3. **Disguised missing values (G2):** the profiler counts a *generic* token list
    (empty string, `?`, `NA`, `N/A`, `null`, `None`, `-`, `unknown`, case-insensitive,
@@ -239,8 +251,11 @@ misleading accuracy can be, L4 p74) and **two models with contrasting inductive 
 Only course-taught models are used.
 
 **Model 1: decision tree (CART, Gini)** (L4). Scale-free, handles mixed types,
-insensitive to outliers, interpretable, and its complexity is controlled through
-stopping criteria the report must explain (L4 p44, p58–59). Its limitation —
+insensitive to outliers, and its complexity is controlled through stopping criteria the
+report must explain (L4 p44, p58–59). It is *potentially* interpretable: the course says
+"easy to interpret **for small-sized trees**" (L4 p45), and the fitted size is only known
+after tuning. So `plan.md` must not call it interpretable; the report judges
+interpretability from the fitted depth and leaf count in `metrics.json`. Its limitation —
 axis-parallel boundaries (L4 p66, p69) — is what Model 2 contrasts with.
 
 **Model 2**, chosen by measured properties (first matching row wins):
@@ -333,7 +348,15 @@ the majority.
    resampling is used because both models are tested on the same rows, which breaks the
    independence assumption of L4 p89–90. Limitation: this captures test-sample variance,
    not retraining variance — the CV sd gives that view.
-3. If the difference is not significant, recommend the simpler model (L4 p56).
+3. **Recommendation rule.**
+   - CI of the difference **excludes 0** → the primary metric decides; recommend the
+     better model. Do not invoke Occam's razor to support or overturn this.
+   - CI **contains 0** → the models are not distinguishable on this test set; only then
+     apply Occam's razor (L4 p56) and recommend the simpler model.
+   - "Simpler" means **model complexity** from `metrics.json` (e.g. a tree's leaf count vs
+     Naive Bayes's number of probability estimates; support vectors; number of trees).
+     Never use grid size, search effort, training time or the absence of pruning as
+     evidence of simplicity: those describe the search, not the model.
 
 ### Checkpoint B: approve the plan (wait for the user)
 
@@ -345,12 +368,18 @@ Log the answer and any changes.
 
 Write `<run>/train.py` — the exact code that runs, saved before running it. It must:
 
-1. Load the data, apply the Phase 1 decisions (duplicates, confirmed tokens/sentinels,
-   target-missing rows), then split per G0 **before any fitting**.
+1. Load the data and apply the Phase 1 decisions (confirmed tokens/sentinels,
+   target-missing rows) to every file. Deduplicate **training data only**: the whole
+   file before the G0 split when there is no test file, or the training file alone when
+   there is one; a provided test file keeps all its labelled rows. Then split per G0
+   **before any fitting**.
 2. Build one sklearn `Pipeline` per model (G2, G3, G7, G8 steps inside it), so every
    transform is fitted on training folds only.
 3. Run the G9 grid search with stratified CV and record per-model: best parameters,
-   CV mean and sd, training score, fit time.
+   CV mean and sd, training score, fit time, and the **fitted model's complexity**
+   (tree: depth and leaf count; random forest: trees and mean leaves; SVM: support
+   vectors; Naive Bayes: number of estimated conditional probabilities). Phase 5 needs
+   this for any interpretability or simplicity claim.
 4. Refit the best configuration on the full training part; **evaluate on the test set
    once**.
 5. Compute everything in G10 and write `<run>/metrics.json`: dataset shapes after each

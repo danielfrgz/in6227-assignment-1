@@ -11,7 +11,8 @@ Two modes:
   missing and disguised-missing values, column types, target candidates).
 * With ``--target``: adds the class distribution, a one-rule leakage screen per
   feature, highly correlated numeric pairs, a model-variance pilot and, if
-  ``--test`` is given, a train/test comparison.
+  ``--test`` is given, a train/test comparison (schema, class distribution,
+  missing shares, and test rows that exactly duplicate a training row).
 
 Examples::
 
@@ -456,6 +457,10 @@ def main() -> None:
                          "missing_columns": sorted(set(names) - set(t_clean.columns)),
                          "extra_columns": sorted(set(t_clean.columns) - set(names)),
                          "exact_duplicate_rows": int(t_raw.duplicated().sum())}
+            if same:
+                train_hashes = set(pd.util.hash_pandas_object(raw, index=False))
+                test_hashes = pd.util.hash_pandas_object(t_raw, index=False)
+                test_info["rows_duplicating_a_training_row"] = int(test_hashes.isin(train_hashes).sum())
             if args.target in t_clean.columns:
                 test_info["target"] = class_distribution(t_clean[args.target].dropna())
                 train_share = labelled[args.target].value_counts(normalize=True)

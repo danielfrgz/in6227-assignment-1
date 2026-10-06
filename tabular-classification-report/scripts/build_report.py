@@ -12,7 +12,9 @@ Supported Markdown subset:
 
 * A header block at the very top between two ``---`` lines, with
   ``key: value`` lines: ``title``, ``name``, ``matric``, ``assignment``,
-  ``variant``, ``model``, ``interface``, ``skill``.
+  ``variant``, ``model``, ``interface``, ``skill``, ``repo``. The ``repo``
+  line is rendered as its own line under the metadata (the assignment requires
+  the repository link in the report); a missing field produces a warning.
 * ``## Heading`` for section headings (rendered upper-case).
 * Paragraphs separated by blank lines; ``**bold**``, ``*italic*`` and
   ```code``` inline.
@@ -114,7 +116,7 @@ STYLES = {
 }
 
 HEADER_KEYS = ["title", "name", "matric", "assignment", "variant",
-               "model", "interface", "skill"]
+               "model", "interface", "skill", "repo"]
 
 
 def inline(text: str) -> str:
@@ -164,7 +166,10 @@ def header_flowables(header: dict) -> list:
     if header.get("skill"):
         meta.append(f"Skill: {header['skill']}")
     if meta:
-        out.append(Paragraph(inline(" · ".join(meta)), STYLES["meta"]))
+        out.append(Paragraph(inline(" · ".join(meta)),
+                             STYLES["author" if header.get("repo") else "meta"]))
+    if header.get("repo"):
+        out.append(Paragraph(f"Repository: {inline(header['repo'])}", STYLES["meta"]))
     return out
 
 

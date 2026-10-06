@@ -6,7 +6,8 @@ assignment: <assignment line>
 variant: <variant line>
 model: <model name and version>
 interface: <interface and version>
-skill: <repo URL @ tag or version>
+skill: <skill name and version or tag>
+repo: <GitHub repository URL>
 ---
 <!--
 Instructions for the agent (comments are removed when the PDF is built):
@@ -17,6 +18,10 @@ Instructions for the agent (comments are removed when the PDF is built):
 - Budget of 2 pages: section 1 ~25%, 2 ~10%, 3 ~20%, 4 ~25%, 5 ~20%.
   At most two figures and one results table. Never shrink fonts to fit; cut prose.
 - Use the real column names of the dataset here, in the run's report.md.
+- Header: `repo` is required (the assignment asks for the repository link in the
+  report). `interface` is the version the user confirmed, not an inferred one.
+- Simplicity or interpretability claims cite fitted model complexity from
+  metrics.json (leaf count, depth, number of probability estimates), never grid size.
 -->
 
 ## 1. Data exploration and cleaning
@@ -49,7 +54,7 @@ Instructions for the agent (comments are removed when the PDF is built):
 ![<caption>](figures/<figure>.png){width=80%}
 
 ## 5. Findings and discussion
-<!-- What the comparison shows and what it does not. Recommendation (Occam's razor
-     if not significant, L4 p56). Overfitting check. Limitations: semantics, sampling,
-     distribution shift, what the bootstrap does not capture. What would change the
-     conclusion. -->
+<!-- What the comparison shows and what it does not. Recommendation: if the bootstrap
+     CI excludes 0 the primary metric decides; Occam's razor (L4 p56) only if it
+     contains 0. Overfitting check. Limitations: semantics, sampling, distribution
+     shift, what the bootstrap does not capture. What would change the conclusion. -->
