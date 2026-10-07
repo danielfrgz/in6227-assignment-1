@@ -62,7 +62,9 @@ file with the same columns to use as the test set.
 3. **Report header fields:** full name, matric number, assignment line, variant line,
    repo URL. Read `report_config.yaml` in the working directory if present (simple
    `key: value` lines: `name`, `matric`, `assignment`, `variant`, `repo`; `repo_url` is
-   accepted as an alias for `repo`).
+   accepted as an alias for `repo`). Optional: `running_header`, text printed at the top
+   of every page; copy it verbatim into the report header if given. If absent, omit the
+   line: the renderer prints the course header (IN6227 Data Mining, current year, WKWSCI).
    Otherwise ask at Checkpoint A. Never invent them; a placeholder such as
    `<matric number>` is allowed only if the user asks for one. The repo URL goes into
    the report header's `repo:` field (the assignment requires the link in the report);
@@ -424,6 +426,9 @@ Fill `<skill_dir>/assets/report_template.md` into `<run>/report.md`. Rules:
   reference in parentheses, e.g. "baseline accuracy <a> > chance <b> → macro-F1 (L4 p74)".
 - Space budget (of 2 pages): exploration & cleaning ~25%, features ~10%, training ~20%,
   evaluation ~25%, findings ~20%. At most two figures, one results table.
+- Layout: two columns. Figures flow in a column (width capped at the column width).
+  The results table is a full-width float placed at the **top of the next page**, so
+  refer to it as "the results table", never "below".
 - State limitations honestly: semantics unknown, sampling, distribution shift, what the
   bootstrap does not capture.
 

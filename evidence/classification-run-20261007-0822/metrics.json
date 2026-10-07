@@ -1,0 +1,606 @@
+{
+  "seed": 42,
+  "steps": {
+    "train_raw_rows": 31112,
+    "train_after_dropping_missing_target": 31109,
+    "train_duplicates_dropped": 0,
+    "train_final_rows": 31109,
+    "features_numeric": [
+      "aptitude_score",
+      "performance_score",
+      "stability_index",
+      "load_ratio",
+      "index_weight",
+      "activity_duration",
+      "composite_rank"
+    ],
+    "features_categorical": [
+      "geological_era",
+      "weather_pattern",
+      "region",
+      "personal_interest",
+      "brew_preference",
+      "instrument",
+      "species",
+      "mineral_type"
+    ],
+    "exact_duplicate_feature_columns": [],
+    "test_raw_rows": 13334,
+    "test_after_dropping_missing_target": 13333
+  },
+  "versions": {
+    "python": "3.12.14",
+    "pandas": "3.0.6",
+    "numpy": "2.5.3",
+    "scikit-learn": "1.9.1",
+    "matplotlib": "3.11.2"
+  },
+  "train_class_counts": {
+    "no": 23645,
+    "yes": 7464
+  },
+  "flagged_value_class_counts_train": {
+    "performance_score_and_stability_index_both_0": {
+      "no": 265,
+      "yes": 0
+    },
+    "load_ratio_and_activity_duration_both_0": {
+      "no": 32,
+      "yes": 6
+    },
+    "aptitude_score_eq_510": {
+      "no": 12,
+      "yes": 23
+    },
+    "performance_score_eq_1010": {
+      "no": 7,
+      "yes": 0
+    },
+    "personal_interest_eq_unknown": {
+      "no": 1614,
+      "yes": 153
+    },
+    "species_eq_unknown": {
+      "no": 1607,
+      "yes": 153
+    }
+  },
+  "cv": {
+    "folds": 5,
+    "stratified": true,
+    "shuffle": true,
+    "scoring": "f1_macro"
+  },
+  "models": {
+    "majority_baseline": {
+      "cv_macro_f1_mean": 0.4318405966970344,
+      "cv_macro_f1_sd": 1.577471084350801e-05,
+      "train_macro_f1_mean": 0.4318405961568416
+    },
+    "decision_tree": {
+      "n_configurations": 24,
+      "best_params": {
+        "ccp_alpha": 0.0,
+        "max_depth": 8,
+        "min_samples_leaf": 20
+      },
+      "cv_macro_f1_mean": 0.7468631394335419,
+      "cv_macro_f1_sd": 0.00620834570445608,
+      "train_macro_f1_mean": 0.7608032411430289,
+      "train_minus_cv": 0.013940101709487007,
+      "mean_fit_time_s": 0.15865616798400878,
+      "refit_time_s": 0.14136600494384766,
+      "search_time_s": 4.440067790972535,
+      "all_configs": [
+        {
+          "params": {
+            "ccp_alpha": 0.0,
+            "max_depth": 3,
+            "min_samples_leaf": 1
+          },
+          "cv_mean": 0.7107533185303091,
+          "cv_sd": 0.008209928158983422,
+          "train_mean": 0.7114489016092331
+        },
+        {
+          "params": {
+            "ccp_alpha": 0.0,
+            "max_depth": 3,
+            "min_samples_leaf": 5
+          },
+          "cv_mean": 0.7107533185303091,
+          "cv_sd": 0.008209928158983422,
+          "train_mean": 0.7114489016092331
+        },
+        {
+          "params": {
+            "ccp_alpha": 0.0,
+            "max_depth": 3,
+            "min_samples_leaf": 20
+          },
+          "cv_mean": 0.7107533185303091,
+          "cv_sd": 0.008209928158983422,
+          "train_mean": 0.7114489016092331
+        },
+        {
+          "params": {
+            "ccp_alpha": 0.0,
+            "max_depth": 5,
+            "min_samples_leaf": 1
+          },
+          "cv_mean": 0.7118292228814379,
+          "cv_sd": 0.006588321840230681,
+          "train_mean": 0.7149160178716316
+        },
+        {
+          "params": {
+            "ccp_alpha": 0.0,
+            "max_depth": 5,
+            "min_samples_leaf": 5
+          },
+          "cv_mean": 0.7118705200442594,
+          "cv_sd": 0.006705399283200774,
+          "train_mean": 0.7147652624298575
+        },
+        {
+          "params": {
+            "ccp_alpha": 0.0,
+            "max_depth": 5,
+            "min_samples_leaf": 20
+          },
+          "cv_mean": 0.7121851186538711,
+          "cv_sd": 0.006454404492006525,
+          "train_mean": 0.7146399819650308
+        },
+        {
+          "params": {
+            "ccp_alpha": 0.0,
+            "max_depth": 8,
+            "min_samples_leaf": 1
+          },
+          "cv_mean": 0.7453443367430632,
+          "cv_sd": 0.007394987968682838,
+          "train_mean": 0.7712851106153786
+        },
+        {
+          "params": {
+            "ccp_alpha": 0.0,
+            "max_depth": 8,
+            "min_samples_leaf": 5
+          },
+          "cv_mean": 0.7455131642954611,
+          "cv_sd": 0.006728101894255443,
+          "train_mean": 0.76874739943935
+        },
+        {
+          "params": {
+            "ccp_alpha": 0.0,
+            "max_depth": 8,
+            "min_samples_leaf": 20
+          },
+          "cv_mean": 0.7468631394335419,
+          "cv_sd": 0.00620834570445608,
+          "train_mean": 0.7608032411430289
+        },
+        {
+          "params": {
+            "ccp_alpha": 0.0,
+            "max_depth": null,
+            "min_samples_leaf": 1
+          },
+          "cv_mean": 0.6926059637301896,
+          "cv_sd": 0.0035335122749227264,
+          "train_mean": 1.0
+        },
+        {
+          "params": {
+            "ccp_alpha": 0.0,
+            "max_depth": null,
+            "min_samples_leaf": 5
+          },
+          "cv_mean": 0.7042868389810975,
+          "cv_sd": 0.0026502464611859134,
+          "train_mean": 0.8855068872259839
+        },
+        {
+          "params": {
+            "ccp_alpha": 0.0,
+            "max_depth": null,
+            "min_samples_leaf": 20
+          },
+          "cv_mean": 0.732505835696551,
+          "cv_sd": 0.004832697957421569,
+          "train_mean": 0.8016165133701738
+        },
+        {
+          "params": {
+            "ccp_alpha": 0.001,
+            "max_depth": 3,
+            "min_samples_leaf": 1
+          },
+          "cv_mean": 0.7101011618766491,
+          "cv_sd": 0.007149829170302913,
+          "train_mean": 0.7102925286334859
+        },
+        {
+          "params": {
+            "ccp_alpha": 0.001,
+            "max_depth": 3,
+            "min_samples_leaf": 5
+          },
+          "cv_mean": 0.7101011618766491,
+          "cv_sd": 0.007149829170302913,
+          "train_mean": 0.7102925286334859
+        },
+        {
+          "params": {
+            "ccp_alpha": 0.001,
+            "max_depth": 3,
+            "min_samples_leaf": 20
+          },
+          "cv_mean": 0.7101011618766491,
+          "cv_sd": 0.007149829170302913,
+          "train_mean": 0.7102925286334859
+        },
+        {
+          "params": {
+            "ccp_alpha": 0.001,
+            "max_depth": 5,
+            "min_samples_leaf": 1
+          },
+          "cv_mean": 0.7088540969104473,
+          "cv_sd": 0.007689752691307351,
+          "train_mean": 0.7093789465978859
+        },
+        {
+          "params": {
+            "ccp_alpha": 0.001,
+            "max_depth": 5,
+            "min_samples_leaf": 5
+          },
+          "cv_mean": 0.7088540969104473,
+          "cv_sd": 0.007689752691307351,
+          "train_mean": 0.7093789465978859
+        },
+        {
+          "params": {
+            "ccp_alpha": 0.001,
+            "max_depth": 5,
+            "min_samples_leaf": 20
+          },
+          "cv_mean": 0.7088540969104473,
+          "cv_sd": 0.007689752691307351,
+          "train_mean": 0.7093789465978859
+        },
+        {
+          "params": {
+            "ccp_alpha": 0.001,
+            "max_depth": 8,
+            "min_samples_leaf": 1
+          },
+          "cv_mean": 0.7338058766036495,
+          "cv_sd": 0.01904212218367866,
+          "train_mean": 0.7351482395472064
+        },
+        {
+          "params": {
+            "ccp_alpha": 0.001,
+            "max_depth": 8,
+            "min_samples_leaf": 5
+          },
+          "cv_mean": 0.7338606503215059,
+          "cv_sd": 0.019103876510862833,
+          "train_mean": 0.7351482395472064
+        },
+        {
+          "params": {
+            "ccp_alpha": 0.001,
+            "max_depth": 8,
+            "min_samples_leaf": 20
+          },
+          "cv_mean": 0.7338606503215059,
+          "cv_sd": 0.019103876510862833,
+          "train_mean": 0.7351482395472064
+        },
+        {
+          "params": {
+            "ccp_alpha": 0.001,
+            "max_depth": null,
+            "min_samples_leaf": 1
+          },
+          "cv_mean": 0.7338606503215059,
+          "cv_sd": 0.019103876510862833,
+          "train_mean": 0.7351482395472064
+        },
+        {
+          "params": {
+            "ccp_alpha": 0.001,
+            "max_depth": null,
+            "min_samples_leaf": 5
+          },
+          "cv_mean": 0.7338606503215059,
+          "cv_sd": 0.019103876510862833,
+          "train_mean": 0.7351482395472064
+        },
+        {
+          "params": {
+            "ccp_alpha": 0.001,
+            "max_depth": null,
+            "min_samples_leaf": 20
+          },
+          "cv_mean": 0.7338606503215059,
+          "cv_sd": 0.019103876510862833,
+          "train_mean": 0.7351482395472064
+        }
+      ],
+      "complexity": {
+        "depth": 8,
+        "leaves": 173,
+        "nodes": 345
+      },
+      "feature_importances": {
+        "weather_pattern": 0.4945153537133886,
+        "aptitude_score": 0.2664699350328284,
+        "composite_rank": 0.07975771072707777,
+        "personal_interest": 0.06005331173529145,
+        "activity_duration": 0.0506242705901914,
+        "stability_index": 0.011820565443763859,
+        "brew_preference": 0.009855299274704916,
+        "index_weight": 0.008860616794157915,
+        "load_ratio": 0.005018868756828113,
+        "mineral_type": 0.0037971149748654946,
+        "performance_score": 0.0033554668313087515,
+        "instrument": 0.0026148847585652276,
+        "species": 0.001531011218225205,
+        "geological_era": 0.0011883361431885861,
+        "region": 0.0005372540056142293
+      }
+    },
+    "naive_bayes": {
+      "n_configurations": 4,
+      "best_params": {
+        "alpha": 0.1,
+        "n_bins": 10
+      },
+      "cv_macro_f1_mean": 0.7553934617783107,
+      "cv_macro_f1_sd": 0.004460902414883514,
+      "train_macro_f1_mean": 0.7557947327641891,
+      "train_minus_cv": 0.00040127098587838805,
+      "mean_fit_time_s": 0.08562278747558594,
+      "refit_time_s": 0.0747518539428711,
+      "search_time_s": 0.49999087501782924,
+      "all_configs": [
+        {
+          "params": {
+            "alpha": 0.1,
+            "n_bins": 5
+          },
+          "cv_mean": 0.7544089631216766,
+          "cv_sd": 0.004287791321067398,
+          "train_mean": 0.7546761431156586
+        },
+        {
+          "params": {
+            "alpha": 0.1,
+            "n_bins": 10
+          },
+          "cv_mean": 0.7553934617783107,
+          "cv_sd": 0.004460902414883514,
+          "train_mean": 0.7557947327641891
+        },
+        {
+          "params": {
+            "alpha": 1.0,
+            "n_bins": 5
+          },
+          "cv_mean": 0.754331317793115,
+          "cv_sd": 0.0041401198583277,
+          "train_mean": 0.7546463392913161
+        },
+        {
+          "params": {
+            "alpha": 1.0,
+            "n_bins": 10
+          },
+          "cv_mean": 0.7553645102670752,
+          "cv_sd": 0.004677401600810814,
+          "train_mean": 0.7557567823660347
+        }
+      ],
+      "complexity": {
+        "levels_per_feature": {
+          "aptitude_score": 10,
+          "performance_score": 10,
+          "stability_index": 10,
+          "load_ratio": 10,
+          "index_weight": 10,
+          "activity_duration": 10,
+          "composite_rank": 10,
+          "geological_era": 4,
+          "weather_pattern": 7,
+          "region": 5,
+          "personal_interest": 12,
+          "brew_preference": 3,
+          "instrument": 7,
+          "species": 8,
+          "mineral_type": 15
+        },
+        "total_levels": 131,
+        "conditional_probabilities": 262,
+        "class_priors": 2
+      },
+      "numeric_bins_after_fit": {
+        "aptitude_score": 10,
+        "performance_score": 10,
+        "stability_index": 10,
+        "load_ratio": 10,
+        "index_weight": 10,
+        "activity_duration": 10,
+        "composite_rank": 10
+      }
+    }
+  },
+  "test_class_counts": {
+    "no": 10165,
+    "yes": 3168
+  },
+  "test_unseen_levels": {
+    "geological_era": [],
+    "weather_pattern": [],
+    "region": [],
+    "personal_interest": [],
+    "brew_preference": [],
+    "instrument": [],
+    "species": [],
+    "mineral_type": []
+  },
+  "test": {
+    "majority_baseline": {
+      "accuracy": 0.7623940598514963,
+      "accuracy_ci95_wilson": [
+        0.755094578430505,
+        0.7695423790932313
+      ],
+      "macro_f1": 0.4325900076602264,
+      "per_class": {
+        "no": {
+          "precision": 0.7623940598514963,
+          "recall": 1.0,
+          "f1": 0.8651800153204529,
+          "support": 10165
+        },
+        "yes": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 3168
+        }
+      },
+      "confusion_matrix": {
+        "labels": [
+          "no",
+          "yes"
+        ],
+        "rows_true_cols_pred": [
+          [
+            10165,
+            0
+          ],
+          [
+            3168,
+            0
+          ]
+        ]
+      },
+      "auprc_yes": 0.23760594014850372,
+      "roc_auc": 0.5
+    },
+    "decision_tree": {
+      "accuracy": 0.8308707717692942,
+      "accuracy_ci95_wilson": [
+        0.8244125769989714,
+        0.8371383557196117
+      ],
+      "macro_f1": 0.7453053512923529,
+      "per_class": {
+        "no": {
+          "precision": 0.8629772393538914,
+          "recall": 0.9250368912936547,
+          "f1": 0.8929300603010304,
+          "support": 10165
+        },
+        "yes": {
+          "precision": 0.687320475995076,
+          "recall": 0.5287247474747475,
+          "f1": 0.5976806422836753,
+          "support": 3168
+        }
+      },
+      "confusion_matrix": {
+        "labels": [
+          "no",
+          "yes"
+        ],
+        "rows_true_cols_pred": [
+          [
+            9403,
+            762
+          ],
+          [
+            1493,
+            1675
+          ]
+        ]
+      },
+      "auprc_yes": 0.6591967083002566,
+      "roc_auc": 0.8715578062971079
+    },
+    "naive_bayes": {
+      "accuracy": 0.7994449861246531,
+      "accuracy_ci95_wilson": [
+        0.7925623847691777,
+        0.8061550806913103
+      ],
+      "macro_f1": 0.7562444859647462,
+      "per_class": {
+        "no": {
+          "precision": 0.9265459514861633,
+          "recall": 0.8003935071323168,
+          "f1": 0.8588620289243112,
+          "support": 10165
+        },
+        "yes": {
+          "precision": 0.554261862917399,
+          "recall": 0.7964015151515151,
+          "f1": 0.6536269430051813,
+          "support": 3168
+        }
+      },
+      "confusion_matrix": {
+        "labels": [
+          "no",
+          "yes"
+        ],
+        "rows_true_cols_pred": [
+          [
+            8136,
+            2029
+          ],
+          [
+            645,
+            2523
+          ]
+        ]
+      },
+      "auprc_yes": 0.6857021421731082,
+      "roc_auc": 0.8800564983330601
+    }
+  },
+  "test_n": 13333,
+  "auprc_baseline_prevalence": 0.23760594014850372,
+  "wilson_check_N100_acc0.8": [
+    0.7111690380734977,
+    0.8666340774409012
+  ],
+  "bootstrap": {
+    "metric": "macro_f1",
+    "difference": "decision_tree - naive_bayes",
+    "resamples": 1000,
+    "seed": 42,
+    "observed_difference": -0.01093913467239338,
+    "ci95": [
+      -0.020185351281216835,
+      -0.0021332862815508506
+    ],
+    "mean": -0.010880525220084593,
+    "ci_excludes_zero": true
+  },
+  "recommendation": {
+    "model": "naive_bayes",
+    "reason": "bootstrap CI of the macro-F1 difference excludes 0: the primary metric decides",
+    "complexity_compared": {
+      "decision_tree_leaves": 173,
+      "naive_bayes_conditional_probabilities": 262
+    }
+  }
+}

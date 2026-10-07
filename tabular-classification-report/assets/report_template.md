@@ -8,6 +8,7 @@ model: <model name and version>
 interface: <interface and version>
 skill: <skill name and version or tag>
 repo: <GitHub repository URL>
+running_header: <optional override; delete this line to use the default course header>
 ---
 <!--
 Instructions for the agent (comments are removed when the PDF is built):
@@ -51,7 +52,7 @@ Instructions for the agent (comments are removed when the PDF is built):
 | <model 1> | | | | |
 | <model 2> | | | | |
 
-![<caption>](figures/<figure>.png){width=80%}
+![<caption>](figures/<figure>.png){width=100%}
 
 ## 5. Findings and discussion
 <!-- What the comparison shows and what it does not. Recommendation: if the bootstrap
