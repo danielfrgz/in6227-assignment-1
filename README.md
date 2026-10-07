@@ -9,11 +9,15 @@ against a majority-class baseline, and generates a PDF report of at most two pag
 an audit log of every decision and every human intervention.
 
 ```
+IN6227-Assignment-1-Variant-2.pdf   the submitted PDF: the skill-generated two-page report + the author's reflection
+README.md
+requirements.txt
+evidence/                           run outputs (see Evidence)
 tabular-classification-report/
 ├── SKILL.md                    workflow, decision rules (G0–G10), checkpoints, guardrails
 ├── scripts/
 │   ├── profile_data.py         measures the data → profile.json
-│   ├── build_report.py         renders report.md → report.pdf (course template layout)
+│   ├── build_report.py         renders report.md → report.pdf (two-column course template layout)
 │   └── check_pages.py          fails if the PDF exceeds the page limit
 └── assets/
     └── report_template.md      header fields and the five report sections
@@ -68,14 +72,17 @@ unexplained complex one"):
 
 ## Evidence
 
-`evidence/classification-run-20261006-2339/` is a development run on the assignment's
-dataset (`plan.md`, `metrics.json`, `report.pdf`, `run_log.md`, …). The run log shows the
-checkpoints in use, including a case where the human overrode a rule at Checkpoint B and
-the rule was then changed in the skill (see the commit history).
+Two runs on the assignment's dataset, each with its full output (`profile.json`,
+`plan.md`, `train.py`, `metrics.json`, `figures/`, `report.md`, `report.pdf`, `run_log.md`):
 
-> **This is an evidence run made with skill v0.1 and a placeholder header. It is not the
-> submitted report.** Several rules changed after it (see the commit history); the
-> submitted report comes from a later run with v1.0.0.
+| Folder | Skill code | What it is |
+|---|---|---|
+| `evidence/classification-run-20261006-2339/` | v0.1 (development) | First end-to-end run, placeholder header. **Not the submitted report.** Its run log shows the human overriding the metric rule at Checkpoint B; the rule was then changed in the skill (see the commit history) |
+| `evidence/classification-run-20261007-2104/` | tag **`v1.1.0`** (commit `ed11bce`) | **Final run.** Its `report.pdf` is the generated two-page report in the submission. The metric rule now selects macro-F1 by itself, with no override |
+
+> Version note: tag `v1.1.0` added the two-column layout but did not bump
+> `metadata.version` in SKILL.md, so the final run's header and run log read
+> "1.0.0". The code that ran is the `v1.1.0` tag.
 
 ## Installation and use
 
